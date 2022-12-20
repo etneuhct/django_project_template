@@ -1,0 +1,1 @@
+celery -A {{project_name}} flower
