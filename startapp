@@ -1,0 +1,1 @@
+poetry run django-admin startapp --template https://github.com/etneuhct/django_app_template/archive/main.zip --extension MD %*
