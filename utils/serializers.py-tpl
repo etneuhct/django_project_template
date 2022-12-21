@@ -1,6 +1,4 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.utils.timezone import now
+from rest_framework import serializers
 
 
 class NullableCurrentUserDefault:
@@ -17,5 +15,3 @@ class GenericCreationBaseSerializer(metaclass=serializers.SerializerMetaclass):
     created_by = serializers.HiddenField(
         default=serializers.CurrentUserDefault(), allow_null=True
     )
-
-
