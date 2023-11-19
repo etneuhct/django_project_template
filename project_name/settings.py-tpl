@@ -21,12 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 MODE = os.getenv('MODE', 'dev')
-
-DEBUG = os.getenv('CORS_ALLOW_ALL_ORIGINS', '1') == "1"
+USE_SQLITE = os.getenv('USE_SQLITE', '1') == '1'
+DEBUG = os.getenv('DEBUG', '1') == "1"
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(' ')
 
-if MODE == 'dev':
+
+if USE_SQLITE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -170,15 +171,32 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+
 # Email
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '1') == '1'
-EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+MAIL_SYSTEM = os.getenv("MAIL_SYSTEM", "anymail")
+
+if MAIL_SYSTEM.lower() == "anymail":
+
+    # ANYMAIL
+
+    EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+    ANYMAIL = {
+        "SENDINBLUE_API_KEY": os.getenv('SENDINBLUE_API_KEY'),
+    }
+
+else :
+
+    # BASIC EMAIL
+
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '1') == '1'
+    EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 AUTH_USER_MODEL = "djx_account.User"
 
@@ -211,4 +229,10 @@ DJX_ACCOUNT = {
         "CLIENT_SECRET": os.getenv("DISCORD_CLIENT_SECRET")
     },
 
+    "DEFAULT_ADMIN_USERNAME": os.getenv("DEFAULT_ADMIN_USERNAME"),
+    "DEFAULT_ADMIN_EMAIL": os.getenv("DEFAULT_ADMIN_EMAIL"),
+    "DEFAULT_ADMIN_PASSWORD": os.getenv("DEFAULT_ADMIN_PASSWORD"),
+    "CLIENT_USER_CONFIRMATION_TOKEN_URL": os.getenv("CLIENT_USER_CONFIRMATION_TOKEN_URL"),
+    "CLIENT_USER_PASSWORD_RESET_TOKEN_URL": os.getenv("CLIENT_USER_PASSWORD_RESET_TOKEN_URL")
 }
+
