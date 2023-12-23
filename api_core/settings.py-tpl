@@ -23,7 +23,7 @@ load_dotenv()
 MODE = os.getenv('MODE', 'dev')
 USE_SQLITE = os.getenv('USE_SQLITE', '1') == '1'
 DEBUG = os.getenv('DEBUG', '1') == "1"
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "INSECURE_SECRET_KEY")
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(' ')
 
 
@@ -55,7 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'djx_account'
+    'djx_account',
+    'djx_websocket',
+    'channels',
 ]
 
 if MODE == 'dev':
@@ -93,7 +95,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'api_core.wsgi.application'
+# WSGI_APPLICATION = 'api_core.wsgi.application'
+ASGI_APPLICATION = 'api_core.asgi.application'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -115,9 +118,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
-
+STATIC_URL = os.getenv('STATICS_SERVER_NAME', 'statics.localhost')
 STATIC_ROOT = os.path.join(BASE_DIR, 'statics')
+MEDIA_URL = os.getenv('MEDIAS_SERVER_NAME', 'medias.localhost')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'medias')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -200,7 +205,6 @@ else :
 
 AUTH_USER_MODEL = "djx_account.User"
 
-
 DJX_ACCOUNT = {
     "USER_CONFIRMATION_TOKEN_TTL": 60 * 60 * 24,
     "USER_PASSWORD_RESET_TOKEN_TTL": 60 * 60,
@@ -225,8 +229,8 @@ DJX_ACCOUNT = {
         "CLIENT_SECRET": os.getenv("DISCORD_CLIENT_SECRET")
     },
     "GOOGLE": {
-        "CLIENT_ID": os.getenv("DISCORD_CLIENT_ID"),
-        "CLIENT_SECRET": os.getenv("DISCORD_CLIENT_SECRET")
+        "CLIENT_ID": os.getenv("GOOGLE_CLIENT_ID"),
+        "CLIENT_SECRET": os.getenv("GOOGLE_CLIENT_SECRET")
     },
 
     "DEFAULT_ADMIN_USERNAME": os.getenv("DEFAULT_ADMIN_USERNAME"),
@@ -236,3 +240,14 @@ DJX_ACCOUNT = {
     "CLIENT_USER_PASSWORD_RESET_TOKEN_URL": os.getenv("CLIENT_USER_PASSWORD_RESET_TOKEN_URL")
 }
 
+
+# Channel / Websocket
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT'))],
+        },
+    },
+}

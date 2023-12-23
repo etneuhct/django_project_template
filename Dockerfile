@@ -24,7 +24,4 @@ RUN poetry config virtualenvs.create false
 RUN poetry install --no-interaction  --no-root
 RUN rm -rf /root/.cache/pypoetry
 COPY . .
-RUN python manage.py collectstatic
-
-COPY docker/proxy_default.conf /etc/nginx/conf.d/django_app.conf
 CMD sh ./.docker/runme.sh
