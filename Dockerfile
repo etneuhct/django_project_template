@@ -23,5 +23,6 @@ COPY pyproject.toml .
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-interaction  --no-root
 RUN rm -rf /root/.cache/pypoetry
+RUN python manage.py collectstatic
 COPY . .
 CMD sh ./.docker/runme.sh
