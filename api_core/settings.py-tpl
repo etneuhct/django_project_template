@@ -118,9 +118,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = os.getenv('STATICS_SERVER_NAME', 'statics.localhost')
+STATIC_URL = os.getenv('STATICS_SERVER_NAME', 'http://statics.localhost/statics/')
 STATIC_ROOT = os.path.join(BASE_DIR, 'statics')
-MEDIA_URL = os.getenv('MEDIAS_SERVER_NAME', 'medias.localhost')
+MEDIA_URL = os.getenv('MEDIAS_SERVER_NAME', 'http://medias.localhost/medias/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'medias')
 
 
